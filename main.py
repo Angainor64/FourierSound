@@ -1,7 +1,8 @@
 from typing import Callable, List
 import numpy as np
-import pygame.sndarray, pygame.mixer
-from math import sin, cos
+import pygame.sndarray
+import pygame.mixer
+from math import sin, cos, pow
 from time import sleep
 
 sampling = 44100
@@ -77,13 +78,20 @@ def harmonics(*, amplitudes: List[float], peak: int = 2048, hz: float = 440.0) -
     return adjust_volume(out, peak)
 
 
+def convert_from_db(amplitudes: List[float]) -> List[float]:
+    return [pow(10, amp) for amp in amplitudes]
+
+
 if __name__ == '__main__':
     # play_for(sine_wave(440, 2048), 500)
-    sin_wave = lambda n, x: sin(x)
-    square_wave = lambda n, x: (1 / (2*n-1)) * sin((2*n-1)*x)
-    saw_wave = lambda n, x: (1 / n) * sin(n * x)
+    # sin_wave = lambda n, x: sin(x)
+    # square_wave = lambda n, x: (1 / (2*n-1)) * sin((2*n-1)*x)
+    # saw_wave = lambda n, x: (1 / n) * sin(n * x)
     # play_for(sigma_wave(func=sin_wave, b=25, peak=4096), 1000)
     # play_for(sigma_wave(func=square_wave, b=25, peak=4096), 1000)
     # play_for(sigma_wave(func=saw_wave, b=25, peak=4096), 1000)
     square_amplitudes = [1.0, 0, .45, 0, .3, 0, .205, 0, .14, 0, .01]
-    play_for(harmonics(amplitudes=square_amplitudes), 1000)
+    flute = convert_from_db([-31.5, -43.5, -35, -49, -53, -59, -63, -56.5, -58.5])
+    bassoon = convert_from_db([-45, -40.5, -44, -43, -40, -37, -60, -54, -44, -37, -47, -49, -49])
+    print(bassoon)
+    play_for(harmonics(amplitudes=bassoon, hz=58), 1000)
